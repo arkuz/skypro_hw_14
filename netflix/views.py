@@ -43,7 +43,7 @@ def movies_by_rating_page(group):
 
 @netflix_blueprint.route('/genre/<genre>/')
 def movies_by_genre_page(genre):
-    logger.info(f'Обращение к "/genre/<genre>/"')
+    logger.info(f'Обращение к "/genre/{genre}/"')
     movies = netflix_dao.get_movies_by_genre(genre)
     return jsonify(movies)
 
