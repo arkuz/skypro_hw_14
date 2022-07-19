@@ -12,7 +12,7 @@ class NetflixDAO:
                 d[col[0]] = row[idx]
             return d
 
-        connection = sqlite3.connect(filename)
+        connection = sqlite3.connect(filename, check_same_thread=False)
         connection.row_factory = _dict_factory
         cursor = connection.cursor()
         self.connection = connection
