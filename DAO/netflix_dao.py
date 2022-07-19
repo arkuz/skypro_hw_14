@@ -1,25 +1,31 @@
 import sqlite3
 
 
-class NetflixDAO:
-    connection = None
-    cursor = None
+def _dict_factory(cursor, row):
+    d = {}
+    for idx, col in enumerate(cursor.description):
+        d[col[0]] = row[idx]
+    return d
 
+
+class SQLiteConnection:
     def __init__(self, filename):
-        def _dict_factory(cursor, row):
-            d = {}
-            for idx, col in enumerate(cursor.description):
-                d[col[0]] = row[idx]
-            return d
-
         connection = sqlite3.connect(filename, check_same_thread=False)
         connection.row_factory = _dict_factory
-        cursor = connection.cursor()
         self.connection = connection
-        self.cursor = cursor
 
-    def __del__(self):
+    def __enter__(self):
+        return self.connection
+
+    def __exit__(self, *args):
         self.connection.close()
+
+
+class NetflixDAO:
+    cursor = None
+
+    def __init__(self, connection):
+        self.cursor = connection.cursor()
 
     def get_movie_by_title(self, title: str) -> dict:
         """Поиск по названию, если фильмов несколько, выведим самый свежий"""

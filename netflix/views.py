@@ -1,5 +1,5 @@
 import logging
-from DAO.netflix_dao import NetflixDAO
+from DAO.netflix_dao import NetflixDAO, SQLiteConnection
 from const import ErrorCode, RatingGroup
 from flask import Blueprint, jsonify
 
@@ -7,7 +7,8 @@ logger = logging.getLogger(__name__)
 
 netflix_blueprint = Blueprint('netflix_blueprint', __name__, template_folder='templates')
 
-netflix_dao = NetflixDAO('netflix.db')
+with SQLiteConnection('netflix.db') as connection:
+    netflix_dao = NetflixDAO(connection)
 
 
 @netflix_blueprint.route('/movie/<title>/')
