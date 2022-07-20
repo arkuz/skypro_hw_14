@@ -18,3 +18,11 @@ class ErrorCode:
     """Коды ошибок"""
     ERROR_404 = {'code': 404, 'text': 'Page not found'}
     ERROR_500 = {'code': 500, 'text': 'Internal Server Error'}
+
+class ErrorMessage:
+    """Пользовательские сообщения об ошибках"""
+    EMPTY_RESULT = {'type': 'error', 'message': 'Empty result'}
+
+class DB:
+    FILENAME = 'netflix.db'
+

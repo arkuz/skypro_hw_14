@@ -1,20 +1,20 @@
 import logging
-from DAO.netflix_dao import NetflixDAO, SQLiteConnection
-from const import ErrorCode, RatingGroup
+from DAO.netflix_dao import NetflixDAO
+from const import ErrorCode, RatingGroup, ErrorMessage
 from flask import Blueprint, jsonify
 
 logger = logging.getLogger(__name__)
 
 netflix_blueprint = Blueprint('netflix_blueprint', __name__, template_folder='templates')
 
-with SQLiteConnection('netflix.db') as connection:
-    netflix_dao = NetflixDAO(connection)
+netflix_dao = NetflixDAO()
 
 
 @netflix_blueprint.route('/movie/<title>/')
 def movie_by_title_page(title):
     logger.info(f'Обращение к "/movie/{title}/"')
     movie = netflix_dao.get_movie_by_title(title)
+    movie = movie if movie is not None else ErrorMessage.EMPTY_RESULT
     return jsonify(movie)
 
 
@@ -22,6 +22,7 @@ def movie_by_title_page(title):
 def movies_year_to_year_page(year_from, year_to):
     logger.info(f'Обращение к "/movie/{year_from}/to/{year_to}/"')
     movies = netflix_dao.get_movies_year_to_year(year_from, year_to)
+    movies = movies if len(movies) > 0 else ErrorMessage.EMPTY_RESULT
     return jsonify(movies)
 
 
@@ -39,6 +40,7 @@ def movies_by_rating_page(group):
         return jsonify(ErrorCode.ERROR_404)
 
     movies = netflix_dao.get_movies_by_rating(current_group)
+    movies = movies if len(movies) > 0 else ErrorMessage.EMPTY_RESULT
     return jsonify(movies)
 
 
@@ -46,6 +48,7 @@ def movies_by_rating_page(group):
 def movies_by_genre_page(genre):
     logger.info(f'Обращение к "/genre/{genre}/"')
     movies = netflix_dao.get_movies_by_genre(genre)
+    movies = movies if len(movies) > 0 else ErrorMessage.EMPTY_RESULT
     return jsonify(movies)
 
 
